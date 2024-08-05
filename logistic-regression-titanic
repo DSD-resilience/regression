@@ -1,0 +1,29 @@
+# Install and load the necessary packages
+if (!require(titanic)) install.packages("titanic")
+if (!require(dplyr)) install.packages("dplyr")
+if (!require(caret)) install.packages("caret")
+
+library(titanic)
+library(dplyr)
+library(caret)
+
+# Load the Titanic dataset
+data("titanic_train")
+
+# View the first few rows of the dataset
+head(titanic_train)
+
+# Select relevant columns and remove rows with missing values
+titanic_clean <- titanic_train %>%
+  select(Survived, Pclass, Sex, Age) %>%
+  filter(!is.na(Age))
+
+# Convert categorical variables to factors
+titanic_clean <- titanic_clean %>%
+  mutate(Survived = as.factor(Survived),
+         Pclass = as.factor(Pclass),
+         Sex = as.factor(Sex))
+
+# Split the data into training and testing sets
+set.seed(123)  # For reproducibility
+train_index <- createDataPartition(titanic_clean$Survived, p = 0.7,
